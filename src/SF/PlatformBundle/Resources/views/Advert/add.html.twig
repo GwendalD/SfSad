@@ -1,0 +1,27 @@
+{# src/SF/PlatformBundle/Resources/views/Advert/add.html.twig #}
+
+{% extends "SFPlatformBundle::layout.html.twig" %}
+
+{% block title %}
+  Ajouter une annonce - {{ parent() }}
+{% endblock %}
+
+{% block sfplatform_body %}
+
+  <h2>Ajouter une annonce</h2>
+
+  {{ include("SFPlatformBundle:Advert:form.html.twig") }}
+
+  <p>
+    Vous éditez une annonce déjà existante, merci de ne pas changer
+    l'esprit général de l'annonce déjà publiée.
+  </p>
+
+  <p>
+    <a href="{{ path('sf_platform_view', {'id': advert.id}) }}" class="btn btn-default">
+      <i class="glyphicon glyphicon-chevron-left"></i>
+      Retour à l'annonce
+    </a>
+  </p>
+
+{% endblock %}

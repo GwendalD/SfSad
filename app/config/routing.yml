@@ -1,0 +1,3 @@
+sf_platform:
+    resource: "@SFPlatformBundle/Resources/config/routing.yml"
+    prefix:   /
