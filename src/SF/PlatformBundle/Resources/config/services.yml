@@ -5,7 +5,7 @@ services:
         class: SF\PlatformBundle\Antispam\SFAntispam
         arguments:
             - "@mailer"
-            - %locale%
+            - '%locale%'
             - 50
 
 parameters:

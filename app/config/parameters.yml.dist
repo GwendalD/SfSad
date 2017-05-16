@@ -6,11 +6,19 @@ parameters:
     database_port: ~
     database_name: symfony
     database_user: root
-    database_password: ~
+    database_password: aqwzsxed1
     app_webmaster: gwendal
     # You should uncomment this if you want to use pdo_sqlite
     #database_path: '%kernel.root_dir%/../var/data/data.sqlite'
-
+    
+    # Postgresl
+    psql_database_driver: pdo_pgsql
+    psql_database_host: 127.0.0.1
+    psql_database_port: 5432
+    psql_database_name: symfony
+    psql_database_user: root
+    psql_database_password: aqwzsxed1
+    
     mailer_transport: smtp
     mailer_host: 127.0.0.1
     mailer_user: ~
