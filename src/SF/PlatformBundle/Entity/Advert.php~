@@ -2,6 +2,7 @@
 
 namespace SF\PlatformBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -9,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="advert")
  * @ORM\Entity(repositoryClass="SF\PlatformBundle\Repository\AdvertRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Advert
 {
@@ -67,11 +69,15 @@ class Advert
     private $categories;
     
     /**
-    * @ORM\OneToMany(targetEntity="OC\PlatformBundle\Entity\Application", mappedBy="advert")
+    * @ORM\OneToMany(targetEntity="SF\PlatformBundle\Entity\Application", mappedBy="advert")
     */
 
     private $applications; // Notez le « s », une annonce est liée à plusieurs candidatures
 
+    /**
+    * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+    */
+    private $updatedAt;
 
     public function __construct()
 
@@ -80,6 +86,8 @@ class Advert
         // Par défaut, la date de l'annonce est la date d'aujourd'hui
 
         $this->date = new \Datetime();
+
+        $this->applications = new ArrayCollection();
 
     }
 
@@ -269,5 +277,47 @@ class Advert
     public function getCategories()
     {
         return $this->categories;
+    }
+
+    /**
+     * Add application
+     *
+     * @param \SF\PlatformBundle\Entity\Application $application
+     *
+     * @return Advert
+     */
+    public function addApplication(\SF\PlatformBundle\Entity\Application $application)
+    {
+        $this->applications[] = $application;
+
+        return $this;
+    }
+
+    /**
+     * Remove application
+     *
+     * @param \SF\PlatformBundle\Entity\Application $application
+     */
+    public function removeApplication(\SF\PlatformBundle\Entity\Application $application)
+    {
+        $this->applications->removeElement($application);
+    }
+
+    /**
+     * Get applications
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getApplications()
+    {
+        return $this->applications;
+    }
+
+    /**
+    * @ORM\PreUpdate
+    */
+    public function updateDate()
+    {
+        $this->setUpdatedAt(new \Datetime());
     }
 }

@@ -8,5 +8,18 @@ services:
             - '%locale%'
             - 50
 
+    sf_platform.email.application_mailer:
+        class: SF\PlatformBundle\Email\ApplicationMailer
+        arguments:
+            - "@mailer"
+
+    sf_platform.doctrine_listener.application_creation:
+        class: SF\PlatformBundle\DoctrineListener\ApplicationCreationListener
+        arguments:
+            - "@sf_platform.email.application_mailer"
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+
+
 parameters:
     mon_parametre: ma_valeur

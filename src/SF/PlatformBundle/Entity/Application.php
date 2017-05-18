@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Table(name="application")
  * @ORM\Entity(repositoryClass="SF\PlatformBundle\Repository\ApplicationRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Application
 {
@@ -39,116 +40,131 @@ class Application
    */
 
   private $advert;
-  
+
   public function __construct()
   {
     $this->date = new \Datetime();
   }
 
+  /**
+   * Get id
+   *
+   * @return integer
+   */
+  public function getId()
+  {
+      return $this->id;
+  }
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+  /**
+   * Set author
+   *
+   * @param string $author
+   *
+   * @return Application
+   */
+  public function setAuthor($author)
+  {
+      $this->author = $author;
 
-    /**
-     * Set author
-     *
-     * @param string $author
-     *
-     * @return Application
-     */
-    public function setAuthor($author)
-    {
-        $this->author = $author;
+      return $this;
+  }
 
-        return $this;
-    }
+  /**
+   * Get author
+   *
+   * @return string
+   */
+  public function getAuthor()
+  {
+      return $this->author;
+  }
 
-    /**
-     * Get author
-     *
-     * @return string
-     */
-    public function getAuthor()
-    {
-        return $this->author;
-    }
+  /**
+   * Set content
+   *
+   * @param string $content
+   *
+   * @return Application
+   */
+  public function setContent($content)
+  {
+      $this->content = $content;
 
-    /**
-     * Set content
-     *
-     * @param string $content
-     *
-     * @return Application
-     */
-    public function setContent($content)
-    {
-        $this->content = $content;
+      return $this;
+  }
 
-        return $this;
-    }
+  /**
+   * Get content
+   *
+   * @return string
+   */
+  public function getContent()
+  {
+      return $this->content;
+  }
 
-    /**
-     * Get content
-     *
-     * @return string
-     */
-    public function getContent()
-    {
-        return $this->content;
-    }
+  /**
+   * Set date
+   *
+   * @param \DateTime $date
+   *
+   * @return Application
+   */
+  public function setDate($date)
+  {
+      $this->date = $date;
 
-    /**
-     * Set date
-     *
-     * @param \DateTime $date
-     *
-     * @return Application
-     */
-    public function setDate($date)
-    {
-        $this->date = $date;
+      return $this;
+  }
 
-        return $this;
-    }
+  /**
+   * Get date
+   *
+   * @return \DateTime
+   */
+  public function getDate()
+  {
+      return $this->date;
+  }
 
-    /**
-     * Get date
-     *
-     * @return \DateTime
-     */
-    public function getDate()
-    {
-        return $this->date;
-    }
+  /**
+   * Set advert
+   *
+   * @param \SF\PlatformBundle\Entity\Advert $advert
+   *
+   * @return Application
+   */
+  public function setAdvert(\SF\PlatformBundle\Entity\Advert $advert)
+  {
+      $this->advert = $advert;
 
-    /**
-     * Set advert
-     *
-     * @param \SF\PlatformBundle\Entity\Advert $advert
-     *
-     * @return Application
-     */
-    public function setAdvert(\SF\PlatformBundle\Entity\Advert $advert)
-    {
-        $this->advert = $advert;
+      return $this;
+  }
 
-        return $this;
-    }
+  /**
+   * Get advert
+   *
+   * @return \SF\PlatformBundle\Entity\Advert
+   */
+  public function getAdvert()
+  {
+      return $this->advert;
+  }
 
-    /**
-     * Get advert
-     *
-     * @return \SF\PlatformBundle\Entity\Advert
-     */
-    public function getAdvert()
-    {
-        return $this->advert;
-    }
+  /**
+   * @ORM\PrePersist
+   */
+  public function increase()
+  {
+      $this->getAdvert()->increaseApplication();
+  }
+
+  /**
+   * @ORM\PreRemove
+   */
+  public function decrease()
+  {
+      $this->getAdvert()->decreaseApplication();
+  }
 }

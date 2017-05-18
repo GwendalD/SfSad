@@ -31,6 +31,20 @@ class AdvertRepository extends \Doctrine\ORM\EntityRepository
 
 	}
 
+	public function getLastAdvertMenu($limit)
+	{
+		$qb = $this
+		->createQueryBuilder('a')
+		->select('a.id, a.title')
+		->orderBy('a.date', 'DESC')
+		->setMaxResults($limit);
+
+		return $qb
+		->getQuery()
+		->getArrayResult()
+		;
+	}
+
 	public function getAdvertCurrentYear()
 	{
 		$qb = $this->createQueryBuilder('a');
@@ -46,6 +60,7 @@ class AdvertRepository extends \Doctrine\ORM\EntityRepository
 
 		// On peut ajouter ce qu'on veut après
 		$qb->orderBy('a.date', 'DESC');
+
 
 		return $qb
 		->getQuery()

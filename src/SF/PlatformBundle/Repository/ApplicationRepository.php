@@ -9,8 +9,6 @@ namespace SF\PlatformBundle\Repository;
  * repository methods below.
  */
 
-namespace SF\PlatformBundle\Entity;
-
 use Doctrine\ORM\EntityRepository;
 
 class ApplicationRepository extends \Doctrine\ORM\EntityRepository

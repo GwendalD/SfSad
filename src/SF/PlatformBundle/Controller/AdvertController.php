@@ -16,28 +16,15 @@ class AdvertController extends Controller
 {
   public function indexAction($page)
   {
-    // ...
+    $em = $this->getDoctrine()->getManager();
 
-    // Notre liste d'annonce en dur
-    $listAdverts = array(
-      array(
-        'title'   => 'Recherche développpeur Symfony',
-        'id'      => 1,
-        'author'  => 'Alexandre',
-        'content' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
-        'date'    => new \Datetime()),
-      array(
-        'title'   => 'Mission de webmaster',
-        'id'      => 2,
-        'author'  => 'Hugo',
-        'content' => 'Nous recherchons un webmaster capable de maintenir notre site internet. Blabla…',
-        'date'    => new \Datetime()),
-      array(
-        'title'   => 'Offre de stage webdesigner',
-        'id'      => 3,
-        'author'  => 'Mathieu',
-        'content' => 'Nous proposons un poste pour webdesigner. Blabla…',
-        'date'    => new \Datetime())
+    $listAdverts = $em
+    ->getRepository('SFPlatformBundle:Advert')
+    ->findBy(
+      array(), // Critere
+      array('date' => 'desc'),        // Tri
+      null,                              // Limite
+      null                               // Offset
     );
 
     // Et modifiez le 2nd argument pour injecter notre liste
@@ -48,13 +35,15 @@ class AdvertController extends Controller
 
   public function menuAction($limit)
   {
-    // On fixe en dur une liste ici, bien entendu par la suite
-    // on la récupérera depuis la BDD !
-    $listAdverts = array(
-      array('id' => 2, 'title' => 'Recherche développeur Symfony'),
-      array('id' => 5, 'title' => 'Mission de webmaster'),
-      array('id' => 9, 'title' => 'Offre de stage webdesigner')
-    );
+    
+
+    $em = $this->getDoctrine()->getManager();
+
+    // On récupère les annonces avec notre propre requete pour ne choisir que quelque champs
+    $listAdverts = $em
+      ->getRepository('SFPlatformBundle:Advert')
+      ->getLastAdvertMenu($limit);
+
 
     return $this->render('SFPlatformBundle:Advert:menu.html.twig', array(
       // Tout l'intérêt est ici : le contrôleur passe
@@ -280,4 +269,5 @@ class AdvertController extends Controller
       // Vous pourriez faire une boucle dessus pour les afficher toutes
       $advert->getApplications();
     }
+  }
 }
