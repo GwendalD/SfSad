@@ -18,6 +18,7 @@ class AppKernel extends Kernel
             new SF\PlatformBundle\SFPlatformBundle(),
             new SF\CoreBundle\SFCoreBundle(),
             new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
+            new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

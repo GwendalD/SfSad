@@ -4,6 +4,7 @@
 namespace SF\PlatformBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="application")
@@ -23,6 +24,16 @@ class Application
    * @ORM\Column(name="author", type="string", length=255)
    */
   private $author;
+
+  /**
+  * @Assert\Email(
+  *     message = "The email '{{ value }}' is not a valid email.",
+  *     checkMX = true
+  * )
+  * @ORM\Column(name="email", type="string", length=255)
+  */
+  
+  private $email;
 
   /**
    * @ORM\Column(name="content", type="text")
@@ -167,4 +178,28 @@ class Application
   {
       $this->getAdvert()->decreaseApplication();
   }
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     *
+     * @return Application
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
 }
