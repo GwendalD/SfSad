@@ -15,6 +15,19 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class AdvertRepository extends \Doctrine\ORM\EntityRepository
 {
+
+	public function getAdvertsBefore(\Datetime $date)
+	{
+	return $this->createQueryBuilder('a')
+	  ->where('a.updatedAt <= :date')                      // Date de modification antérieure à :date
+	  ->orWhere('a.updatedAt IS NULL AND a.date <= :date') // Si la date de modification est vide, on vérifie la date de création
+	  ->andWhere('a.applications IS EMPTY')                // On vérifie que l'annonce ne contient aucune candidature
+	  ->setParameter('date', $date)
+	  ->getQuery()
+	  ->getResult()
+	  ;
+	}
+  
 	// This will return a QueryBuilder instance
     public function findAllPagination()
     {

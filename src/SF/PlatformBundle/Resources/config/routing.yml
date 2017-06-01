@@ -40,3 +40,10 @@ sf_platform_delete:
         _controller: SFPlatformBundle:Advert:delete
     requirements:
         id: \d+
+
+sf_platform_purge:
+    path:    /purge/{days}
+    defaults:
+        _controller: SFPlatformBundle:Advert:purge
+    requirements:
+        days: \d+

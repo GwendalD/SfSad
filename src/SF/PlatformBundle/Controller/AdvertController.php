@@ -11,6 +11,9 @@ use SF\PlatformBundle\Entity\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use SF\PlatformBundle\Form\AdvertType;
+use SF\PlatformBundle\Form\AdvertEditType;
+
 
 class AdvertController extends Controller
 {
@@ -112,17 +115,23 @@ class AdvertController extends Controller
 
   public function addAction(Request $request)
   {
-    $em = $this->getDoctrine()->getManager();
+    $advert = new Advert();
+    $form   = $this->createForm(AdvertType::class, $advert);
 
-    // On ne sait toujours pas gérer le formulaire, patience cela vient dans la prochaine partie !
+    if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-    if ($request->isMethod('POST')) {
+      $em = $this->getDoctrine()->getManager();
+      $em->persist($advert);
+      $em->flush();
+
       $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
 
       return $this->redirectToRoute('sf_platform_view', array('id' => $advert->getId()));
     }
 
-    return $this->render('SFPlatformBundle:Advert:add.html.twig');
+    return $this->render('SFPlatformBundle:Advert:add.html.twig', array(
+      'form' => $form->createView(),
+    ));
   }
 
   public function editAction($id, Request $request)
@@ -135,38 +144,60 @@ class AdvertController extends Controller
       throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
     }
 
-    // Ici encore, il faudra mettre la gestion du formulaire
+    $form   = $this->createForm(AdvertEditType::class, $advert);
 
-    if ($request->isMethod('POST')) {
-      $request->getSession()->getFlashBag()->add('notice', 'Annonce bien modifiée.');
+    if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+  
+      $em->persist($advert);
+      $em->flush();
+
+      $request->getSession()->getFlashBag()->add('notice', 'Annonce bien Modifié.');
 
       return $this->redirectToRoute('sf_platform_view', array('id' => $advert->getId()));
     }
 
     return $this->render('SFPlatformBundle:Advert:edit.html.twig', array(
-      'advert' => $advert
+      'advert' => $advert,
+      'form' => $form->createView()
     ));
   }
 
-  public function deleteAction($id)
+  public function deleteAction(Request $request, $id)
+
   {
     $em = $this->getDoctrine()->getManager();
 
     $advert = $em->getRepository('SFPlatformBundle:Advert')->find($id);
 
     if (null === $advert) {
+
       throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
-    }
-
-    // On boucle sur les catégories de l'annonce pour les supprimer
-    foreach ($advert->getCategories() as $category) {
-      $advert->removeCategory($category);
-    }
-
-    $em->flush();
     
-    return $this->render('SFPlatformBundle:Advert:delete.html.twig');
+    }
+
+    // On crée un formulaire vide, qui ne contiendra que le champ CSRF
+    // Cela permet de protéger la suppression d'annonce contre cette faille
+
+    $form = $this->get('form.factory')->create();
+
+    if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+
+      $em->remove($advert);
+      $em->flush();
+
+      $request->getSession()->getFlashBag()->add('info', "L'annonce a bien été supprimée.");
+
+      return $this->redirectToRoute('sf_platform_home');
+
+    }
+
+    return $this->render('SFPlatformBundle:Advert:delete.html.twig', array(
+      'advert' => $advert,
+      'form'   => $form->createView(),
+    ));
+
   }
+
 
   public function listAction()
   {
@@ -182,5 +213,18 @@ class AdvertController extends Controller
       // Vous pourriez faire une boucle dessus pour les afficher toutes
       $advert->getApplications();
     }
+  }
+
+    // Méthode facultative pour tester la purge
+  public function purgeAction($days, Request $request)
+  {
+    // On récupère notre service
+    $purger = $this->get('sf_platform.purger.advert');
+    // On purge les annonces
+    $purger->purge($days);
+    // On ajoute un message flash arbitraire
+    $request->getSession()->getFlashBag()->add('info', 'Les annonces plus vieilles que '.$days.' jours ont été purgées.');
+    // On redirige vers la page d'accueil
+    return $this->redirectToRoute('sf_platform_home');
   }
 }

@@ -20,6 +20,16 @@ services:
         tags:
             - { name: doctrine.event_listener, event: postPersist }
 
+    sf_platform.purger.advert:
+        class: SF\PlatformBundle\Purger\AdvertPurger
+        arguments:
+            - "@doctrine.orm.entity_manager"
+
+    sf_platform.validator.antiflood:                              # Le nom du service
+        class: SF\PlatformBundle\Validator\AntifloodValidator     # La classe du service, ici notre validateur déjà créé
+        arguments: ["@request_stack", "@doctrine.orm.entity_manager"] # Les données qu'on injecte au service : la requête et l'EntityManager
+        tags:
+            - { name: validator.constraint_validator, alias: sf_platform_antiflood }  # C'est avec l'alias qu'on retrouvera le service
 
 parameters:
     mon_parametre: ma_valeur
