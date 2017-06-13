@@ -10,12 +10,23 @@
 
   <h2>Ajouter une annonce</h2>
 
-  {{ include("SFPlatformBundle:Advert:form.html.twig") }}
+  {% if is_granted('ROLE_AUTEUR') %}
 
-  <p>
-    Vous éditez une annonce déjà existante, merci de ne pas changer
-    l'esprit général de l'annonce déjà publiée.
-  </p>
+    {{ include("SFPlatformBundle:Advert:form.html.twig") }}
+
+    <p>
+      Vous éditez une annonce déjà existante, merci de ne pas changer
+      l'esprit général de l'annonce déjà publiée.
+    </p>
+  {% else %}
+
+    <p>
+      Seul les auteurs peuvent ajouter une annonce.
+    </p>
+
+  {% endif %}
+  
+
 
   {# <p>
     <a href="{{ path('sf_platform_view', {'id': advert.id}) }}" class="btn btn-default">

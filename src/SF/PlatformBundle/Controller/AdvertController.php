@@ -115,6 +115,7 @@ class AdvertController extends Controller
 
   public function addAction(Request $request)
   {
+    
     $advert = new Advert();
     $form   = $this->createForm(AdvertType::class, $advert);
 
