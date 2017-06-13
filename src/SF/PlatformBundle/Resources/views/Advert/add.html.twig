@@ -10,7 +10,7 @@
 
   <h2>Ajouter une annonce</h2>
 
-  {% if is_granted('ROLE_AUTEUR') %}
+  {# {% if is_granted('ROLE_AUTEUR') %} #}
 
     {{ include("SFPlatformBundle:Advert:form.html.twig") }}
 
@@ -18,13 +18,13 @@
       Vous éditez une annonce déjà existante, merci de ne pas changer
       l'esprit général de l'annonce déjà publiée.
     </p>
-  {% else %}
+  {# {% else %}
 
     <p>
       Seul les auteurs peuvent ajouter une annonce.
     </p>
 
-  {% endif %}
+  {% endif %} #}
   
 
 

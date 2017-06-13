@@ -108,3 +108,22 @@ fos_user:
     from_email:
         address: gwendaldugue@gmail.com
         sender_name: Gwendal
+
+ivory_ck_editor:
+    default_config:                     my_custom_config    # Utiliser par defaut la configuration my_custom_config
+    configs:
+        my_custom_config:
+            language:                   %locale%
+            toolbar:                    standard            # Charger la toolbar tollbar_1 (voir plus bas)
+            stylesSet:                  my_styles           # Chargement des styles personnalisables my_styles (voir plus bas)
+            uiColor:                    "#FCFCFC"           # Couleur de fond de l'interface
+            height:                     '600px'             # Hauteur par défaut
+            # Utiliser les styles css suivants dans le contenu de l'éditeur. Permet de voir le rendu en temps réeem
+            contentsCss:                ['bundles/app/css/style.css']
+    styles:         # Configuration des styles personnalisables
+        my_styles:
+            - { name: "Alerte Success", element: "div",  attributes: { class: "alert alert-success", role: "alert" }}
+            - { name: "Alerte Info", element: "div",  attributes: { class: "alert alert-info", role: "alert" }}
+            - { name: "Alerte Warning", element: "div",  attributes: { class: "alert alert-warning", role: "alert" }}
+            - { name: "Alerte Danger", element: "div",  attributes: { class: "alert alert-danger", role: "alert" }}
+            - { name: "Badge", element: "span",  attributes: { class: "badge" }}

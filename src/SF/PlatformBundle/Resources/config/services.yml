@@ -31,5 +31,17 @@ services:
         tags:
             - { name: validator.constraint_validator, alias: sf_platform_antiflood }  # C'est avec l'alias qu'on retrouvera le service
 
+    sf_platform.twig.antispam_extension:
+        class: SF\PlatformBundle\Twig\AntispamExtension
+        arguments:
+            - "@sf_platform.antispam"
+        tags:
+            -  { name: twig.extension }
+
+    sf_platform.form.ckeditor:
+        class: SF\PlatformBundle\Form\CkeditorType
+        tags:
+            - { name: form.type, alias: ckeditor }
+
 parameters:
     mon_parametre: ma_valeur

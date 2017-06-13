@@ -18,6 +18,8 @@ use Symfony\Component\Form\FormEvents;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use Ivory\CKEditorBundle\Form\Type\CKEditorType;
+
 class AdvertType extends AbstractType
 {
 
@@ -31,7 +33,9 @@ class AdvertType extends AbstractType
       ->add('date',      DateTimeType::class)
       ->add('title',     TextType::class)
       ->add('author',    TextType::class)
-      ->add('content',   TextareaType::class)
+      ->add('content', CKEditorType::class, array (
+          'label' => 'Contenu',
+      ))
       // ->add('published', CheckboxType::class, array('required' => false))
       ->add('image',     ImageType::class)
       /*
