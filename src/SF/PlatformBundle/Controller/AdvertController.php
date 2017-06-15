@@ -90,11 +90,7 @@ class AdvertController extends Controller
     // Pour récupérer une seule annonce, on utilise la méthode find($id)
     $advert = $em->getRepository('SFPlatformBundle:Advert')->find($id);
 
-    $advertTest = $em->getRepository('SFPlatformBundle:Advert')->getAdvert($id);
-
-    // // var_dump($advert);
-
-    // die();
+    // $advert = $em->getRepository('SFPlatformBundle:Advert')->getAdvert($id); // A mapper dans le repository
 
     // $advert est donc une instance de SF\PlatformBundle\Entity\Advert
     // ou null si l'id $id n'existe pas, d'où ce if :
