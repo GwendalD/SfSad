@@ -1,7 +1,6 @@
 <?php
 // src/SF/PlatformBundle/Doctrine/Mysql/GroupConcat.php
 
-// src/Tentacode/LolcatBundle/Doctrine/Mysql/GroupConcat.php
 namespace SF\PlatformBundle\Doctrine\Mysql;
 
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
