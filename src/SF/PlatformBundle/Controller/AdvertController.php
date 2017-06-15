@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use SF\PlatformBundle\Form\AdvertType;
 use SF\PlatformBundle\Form\AdvertEditType;
+use SF\PlatformBundle\Event\PlatformEvents;
+use SF\PlatformBundle\Event\MessagePostEvent;
 
 
 class AdvertController extends Controller
@@ -88,6 +90,12 @@ class AdvertController extends Controller
     // Pour récupérer une seule annonce, on utilise la méthode find($id)
     $advert = $em->getRepository('SFPlatformBundle:Advert')->find($id);
 
+    $advertTest = $em->getRepository('SFPlatformBundle:Advert')->getAdvert($id);
+
+    // // var_dump($advert);
+
+    // die();
+
     // $advert est donc une instance de SF\PlatformBundle\Entity\Advert
     // ou null si l'id $id n'existe pas, d'où ce if :
     if (null === $advert) {
@@ -119,7 +127,21 @@ class AdvertController extends Controller
     $advert = new Advert();
     $form   = $this->createForm(AdvertType::class, $advert);
 
+    if ($this->getUser()) {
+        // On définit le User par défaut dans le formulaire (utilisateur courant)
+        $advert->setUser($this->getUser());
+    }
+
     if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+      
+      // On crée l'évènement avec ses 2 arguments
+      $event = new MessagePostEvent($advert->getContent(), $advert->getUser());
+
+      // On déclenche l'évènement
+      $this->get('event_dispatcher')->dispatch(PlatformEvents::POST_MESSAGE, $event);
+
+      // On récupère ce qui a été modifié par le ou les listeners, ici le message
+      $advert->setContent($event->getMessage());
 
       $em = $this->getDoctrine()->getManager();
       $em->persist($advert);
@@ -129,6 +151,7 @@ class AdvertController extends Controller
 
       return $this->redirectToRoute('sf_platform_view', array('id' => $advert->getId()));
     }
+
 
     return $this->render('SFPlatformBundle:Advert:add.html.twig', array(
       'form' => $form->createView(),

@@ -10,12 +10,24 @@
 
   <h2>Modifier une annonce</h2>
 
-  {{ include("SFPlatformBundle:Advert:form.html.twig") }}
+  {% if is_granted('ROLE_USER') %}
 
-  <p>
-    Vous éditez une annonce déjà existante, merci de ne pas changer
-    l'esprit général de l'annonce déjà publiée.
-  </p>
+    {% if is_granted('ROLE_USER') or app.user.id == advert.user.id %}
+
+      {{ include("SFPlatformBundle:Advert:form.html.twig") }}
+
+
+
+    <p>
+      Vous éditez une annonce déjà existante, merci de ne pas changer
+      l'esprit général de l'annonce déjà publiée.
+    </p>
+
+    {% else %}
+      Si vous souhaitez modifier cette annonces vous devez être connécté et en être propriétaire.
+    {% endif %}
+
+  {% endif %}
 
   <p>
     <a href="{{ path('sf_platform_view', {'id': advert.id}) }}" class="btn btn-default">

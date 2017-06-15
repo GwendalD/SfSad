@@ -17,7 +17,7 @@
   <i>Par {{ advert.author }}, le {{ advert.date|date('d/m/Y') }}</i>
 
   <div class="well">
-    {{ advert.content }}
+    {{ advert.content|raw }}
   </div>
 
   <p>
@@ -25,14 +25,24 @@
       <i class="glyphicon glyphicon-chevron-left"></i>
       Retour à la liste
     </a>
-    <a href="{{ path('sf_platform_edit', {'id': advert.id}) }}" class="btn btn-default">
-      <i class="glyphicon glyphicon-edit"></i>
-      Modifier l'annonce
-    </a>
-    <a href="{{ path('sf_platform_delete', {'id': advert.id}) }}" class="btn btn-danger">
-      <i class="glyphicon glyphicon-trash"></i>
-      Supprimer l'annonce
-    </a>
+
+    {% if is_granted('ROLE_USER') %}
+
+      {% if is_granted('ROLE_ADMIN') or app.user.id == advert.user.id %}
+
+        <a href="{{ path('sf_platform_edit', {'id': advert.id}) }}" class="btn btn-default">
+          <i class="glyphicon glyphicon-edit"></i>
+          Modifier l'annonce
+        </a>
+        <a href="{{ path('sf_platform_delete', {'id': advert.id}) }}" class="btn btn-danger">
+          <i class="glyphicon glyphicon-trash"></i>
+          Supprimer l'annonce
+        </a>
+
+      {% endif %}
+      
+    {% endif %}
+
   </p>
 
   {% if not advert.categories.empty %}

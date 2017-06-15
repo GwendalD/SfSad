@@ -45,6 +45,11 @@ class Advert
   private $title;
 
   /**
+   * @ORM\ManyToOne(targetEntity="SF\UserBundle\Entity\User")
+   */
+  private $user;
+
+  /**
    * @ORM\Column(name="author", type="string", length=255)
    * @Assert\Length(min=2)
    */
@@ -335,4 +340,28 @@ class Advert
       ;
     }
   }
+
+    /**
+     * Set user
+     *
+     * @param \SF\UserBundle\Entity\User $user
+     *
+     * @return Advert
+     */
+    public function setUser(\SF\UserBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \SF\UserBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
 }

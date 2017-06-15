@@ -33,9 +33,7 @@ class AdvertType extends AbstractType
       ->add('date',      DateTimeType::class)
       ->add('title',     TextType::class)
       ->add('author',    TextType::class)
-      ->add('content', CKEditorType::class, array (
-          'label' => 'Contenu',
-      ))
+      ->add('content', CKEditorType::class)
       // ->add('published', CheckboxType::class, array('required' => false))
       ->add('image',     ImageType::class)
       /*
@@ -53,11 +51,11 @@ class AdvertType extends AbstractType
           'class'        => 'SFPlatformBundle:Category',
           'choice_label' => 'name',
           'multiple'     => true,
-          'query_builder' => function(CategoryRepository $repository) use($pattern) {
+          // 'query_builder' => function(CategoryRepository $repository) use($pattern) {
 
-            return $repository->getLikeQueryBuilder($pattern);
+          //   return $repository->getLikeQueryBuilder($pattern);
 
-          }
+          // }
         ))
       ->add('save',      SubmitType::class);
     

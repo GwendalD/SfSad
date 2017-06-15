@@ -11,10 +11,44 @@ namespace SF\PlatformBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class AdvertRepository extends \Doctrine\ORM\EntityRepository
 {
+
+	public function getAdvert($id)
+	{
+		$sql="
+			SELECT a.id
+			     , a.title
+			     , a.author
+			     , a.content
+			     , a.published
+			     , a.updated_at
+			     , a.nb_applications
+			     , a.slug
+			     , a.user_id
+			     , a.image_id
+			     , img.url as img_url
+			     , img.alt as img_alt
+			     , app.id as app_id
+			     , GROUP_CONCAT(c.name ORDER by c.id) AS categories_name
+			     
+			  FROM advert a 
+			  LEFT JOIN advert_category ac ON a.id = ac.advert_id 	
+			  LEFT JOIN category c ON c.id = ac.category_id 
+			  LEFT JOIN application app ON a.id = app.advert_id
+			  LEFT JOIN image img ON a.image_id = img.id
+			  WHERE a.id = $id
+			 GROUP BY a.id, a.title, app_id";
+
+
+	    $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+    	$stmt->execute([]);
+
+    	return $stmt->fetchAll();
+	}
 
 	public function getAdvertsBefore(\Datetime $date)
 	{
@@ -123,6 +157,7 @@ class AdvertRepository extends \Doctrine\ORM\EntityRepository
 		->getResult()
 		;
 	}
+
 
 	public function getAdvertWithCategories(array $categoryNames)
 	{

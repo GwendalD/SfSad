@@ -5,8 +5,9 @@ services:
         class: SF\PlatformBundle\Antispam\SFAntispam
         arguments:
             - "@mailer"
-            - '%locale%'
             - 50
+        calls:
+            - [ setLocale, ['%locale%'] ]
 
     sf_platform.email.application_mailer:
         class: SF\PlatformBundle\Email\ApplicationMailer
@@ -42,6 +43,18 @@ services:
         class: SF\PlatformBundle\Form\CkeditorType
         tags:
             - { name: form.type, alias: ckeditor }
+
+    sf_platform.beta.html_adder:
+        class: SF\PlatformBundle\Beta\BetaHTMLAdder
+    
+    sf_platform.beta.listener:
+        class: SF\PlatformBundle\Beta\BetaListener
+        arguments:
+           - "@sf_platform.beta.html_adder"
+           - "2017-06-01"
+        tags:
+           - { name: kernel.event_listener, event: kernel.response, method: processBeta }
+           # - { name: kernel.event_listener, event: kernel.controller, method: ignoreBeta }
 
 parameters:
     mon_parametre: ma_valeur
