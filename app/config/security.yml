@@ -33,6 +33,7 @@ security:
         target:     /platform
       remember_me:
         secret:     "%secret%" # %secret% est un paramètre de parameter
+        lifetime: 604800
 
   access_control:
     - { path: ^/admin, roles: ROLE_ADMIN }

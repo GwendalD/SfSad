@@ -30,7 +30,6 @@ class Image
      *
      * @ORM\Column(name="url", type="string", length=255)
      * @Assert\Length(max=255)
-     * @Assert\Url()
      */
     private $url;
 

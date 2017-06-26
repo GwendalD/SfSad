@@ -80,6 +80,12 @@ class Advert
   private $categories;
 
   /**
+   * @ORM\OneToMany(targetEntity="SF\PlatformBundle\Entity\AdvertSkill", mappedBy="advert", cascade={"persist", "remove"})
+   * @ORM\JoinTable(name="advert_skill")
+  */
+  private $skills;
+
+  /**
    * @ORM\OneToMany(targetEntity="SF\PlatformBundle\Entity\Application", mappedBy="advert")
    */
   private $applications; // Notez le « s », une annonce est liée à plusieurs candidatures
@@ -104,6 +110,7 @@ class Advert
   {
     $this->date         = new \Datetime();
     $this->categories   = new ArrayCollection();
+    $this->skills   = new ArrayCollection();
     $this->applications = new ArrayCollection();
   }
 
@@ -245,6 +252,30 @@ class Advert
   public function getCategories()
   {
     return $this->categories;
+  }
+
+  /**
+   * @param AdvertSkill $skill
+   */
+  public function addSkill(AdvertSkill $skill)
+  {
+    $this->skills[] = $skill;
+  }
+
+  /**
+   * @param SkAdvertSkillill $skill
+   */
+  public function removeSkill(AdvertSkill $skill)
+  {
+    $this->skills->removeElement($skill);
+  }
+
+  /**
+   * @return ArrayCollection
+   */
+  public function getSkills()
+  {
+    return $this->skills;
   }
 
   /**

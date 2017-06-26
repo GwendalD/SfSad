@@ -17,9 +17,9 @@
 
   {# On met l'id de l'annonce dans la route de l'action du formulaire #}
 
-  <form action="{{ path('sf_platform_delete', {'id': advert.id}) }}" method="post">
+  <form action="{{ path('sf_platform_delete', {'advert_id': advert.id}) }}" method="post">
 
-    <a href="{{ path('sf_platform_view', {'id': advert.id}) }}" class="btn btn-default">
+    <a href="{{ path('sf_platform_view', {'advert_id': advert.id}) }}" class="btn btn-default">
 
       <i class="glyphicon glyphicon-chevron-left"></i>
 

@@ -15,6 +15,7 @@ use SF\PlatformBundle\Form\AdvertType;
 use SF\PlatformBundle\Form\AdvertEditType;
 use SF\PlatformBundle\Event\PlatformEvents;
 use SF\PlatformBundle\Event\MessagePostEvent;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 
 class AdvertController extends Controller
@@ -65,6 +66,13 @@ class AdvertController extends Controller
     // ));
   }
 
+  /**
+  * @ParamConverter("date", options={"format": "Y-m-d"})
+  */
+  public function viewListAction(\Datetime $date)
+  {
+    var_dump($date);
+  }
 
   public function menuAction($limit)
   {
@@ -83,32 +91,34 @@ class AdvertController extends Controller
     ));
   }
 
-  public function viewAction($id)
+  /**
+  * @ParamConverter("advert", options={"mapping": {"advert_id": "id"}})
+  */
+  public function viewAction(Advert $advert)
   {
-    $em = $this->getDoctrine()->getManager();
 
     // Pour récupérer une seule annonce, on utilise la méthode find($id)
-    $advert = $em->getRepository('SFPlatformBundle:Advert')->find($id);
+    // $advert = $em->getRepository('SFPlatformBundle:Advert')->find($id);
 
-    $advertTest = $em->getRepository('SFPlatformBundle:Advert')->getAdvert($id);
-
-    // // var_dump($advert);
-
-    // die();
+    // $advert = $em->getRepository('SFPlatformBundle:Advert')->getAdvert($id); // A mapper dans le repository
 
     // $advert est donc une instance de SF\PlatformBundle\Entity\Advert
     // ou null si l'id $id n'existe pas, d'où ce if :
-    if (null === $advert) {
-      throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
-    }
+    // if (null === $advert) {
+    //   throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
+    // }
 
+
+    /*Les ParamConverter m'évite de refaire à chaque la vérification d'une annonce existe*/
+
+    $em = $this->getDoctrine()->getManager();
     // Récupération de la liste des candidatures de l'annonce
     $listApplications = $em
       ->getRepository('SFPlatformBundle:Application')
       ->findBy(array('advert' => $advert))
     ;
 
-    // Récupération des AdvertSkill de l'annonce
+    // // Récupération des AdvertSkill de l'annonce
     $listAdvertSkills = $em
       ->getRepository('SFPlatformBundle:AdvertSkill')
       ->findBy(array('advert' => $advert))
@@ -149,7 +159,7 @@ class AdvertController extends Controller
 
       $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
 
-      return $this->redirectToRoute('sf_platform_view', array('id' => $advert->getId()));
+      return $this->redirectToRoute('sf_platform_view', array('advert_id' => $advert->getId()));
     }
 
 
@@ -158,26 +168,30 @@ class AdvertController extends Controller
     ));
   }
 
-  public function editAction($id, Request $request)
+  /**
+  * @ParamConverter("advert", options={"mapping": {"advert_id": "id"}})
+  */
+  public function editAction(Advert $advert, Request $request)
   {
+
     $em = $this->getDoctrine()->getManager();
 
-    $advert = $em->getRepository('SFPlatformBundle:Advert')->find($id);
+    // $advert = $em->getRepository('SFPlatformBundle:Advert')->find($id);
 
-    if (null === $advert) {
-      throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
-    }
+    // if (null === $advert) {
+    //   throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
+    // }
 
     $form   = $this->createForm(AdvertEditType::class, $advert);
 
     if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-  
+
       $em->persist($advert);
       $em->flush();
 
       $request->getSession()->getFlashBag()->add('notice', 'Annonce bien Modifié.');
 
-      return $this->redirectToRoute('sf_platform_view', array('id' => $advert->getId()));
+      return $this->redirectToRoute('sf_platform_view', array('advert_id' => $advert->getId()));
     }
 
     return $this->render('SFPlatformBundle:Advert:edit.html.twig', array(
@@ -186,18 +200,12 @@ class AdvertController extends Controller
     ));
   }
 
-  public function deleteAction(Request $request, $id)
-
+  /**
+  * @ParamConverter("advert", options={"mapping": {"advert_id": "id"}})
+  */
+  public function deleteAction(Request $request, Advert $advert)
   {
     $em = $this->getDoctrine()->getManager();
-
-    $advert = $em->getRepository('SFPlatformBundle:Advert')->find($id);
-
-    if (null === $advert) {
-
-      throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
-    
-    }
 
     // On crée un formulaire vide, qui ne contiendra que le champ CSRF
     // Cela permet de protéger la suppression d'annonce contre cette faille
@@ -250,5 +258,12 @@ class AdvertController extends Controller
     $request->getSession()->getFlashBag()->add('info', 'Les annonces plus vieilles que '.$days.' jours ont été purgées.');
     // On redirige vers la page d'accueil
     return $this->redirectToRoute('sf_platform_home');
+  }
+
+  public function translationAction($name)
+  {
+    return $this->render('SFPlatformBundle:Advert:translation.html.twig', array(
+      'name' => $name
+    ));
   }
 }

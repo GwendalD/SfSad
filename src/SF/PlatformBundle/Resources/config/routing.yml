@@ -5,15 +5,20 @@ sf_platform_home:
     defaults:
         _controller: SFPlatformBundle:Advert:index
         page:        1
-
     requirements:
         page: \d*
 
 sf_platform_view:
-    path:      /advert/{id}
+    path:      /advert/{advert_id}
     defaults: { _controller: SFPlatformBundle:Advert:view }
     requirements:
         id: \d+
+
+# pourrait servir pour moteur de recherche
+sf_platform_list:
+  path: /list/{date}
+  defaults:
+    _controller: SFPlatformBundle:Advert:viewList
 
 sf_platform_view_slug:
     path:      /{year}/{slug}.{_format}
@@ -29,13 +34,13 @@ sf_platform_add:
     defaults: { _controller: SFPlatformBundle:Advert:add }
 
 sf_platform_edit:
-    path:      /edit/{id}
+    path:      /edit/{advert_id}
     defaults: { _controller: SFPlatformBundle:Advert:edit }
     requirements:
         id: \d+
 
 sf_platform_delete:
-    path:      /delete/{id}
+    path:      /delete/{advert_id}
     defaults:
         _controller: SFPlatformBundle:Advert:delete
     requirements:

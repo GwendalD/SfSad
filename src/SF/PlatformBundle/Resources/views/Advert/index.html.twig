@@ -13,7 +13,7 @@
   <ul>
     {% for advert in listAdverts %}
       <li>
-        <a href="{{ path('sf_platform_view', {'id': advert.id}) }}">
+        <a href="{{ path('sf_platform_view', {'advert_id': advert.id}) }}">
           {{ advert.title }}
         </a>
         par {{ advert.author }},

@@ -34,8 +34,9 @@ class AdvertType extends AbstractType
       ->add('title',     TextType::class)
       ->add('author',    TextType::class)
       ->add('content', CKEditorType::class)
-      // ->add('published', CheckboxType::class, array('required' => false))
       ->add('image',     ImageType::class)
+      // ->add('published', CheckboxType::class, array('required' => false))
+      
       /*
        * Rappel :
        ** - 1er argument : nom du champ, ici « categories », car c'est le nom de l'attribut
@@ -50,13 +51,20 @@ class AdvertType extends AbstractType
       ->add('categories', EntityType::class, array(
           'class'        => 'SFPlatformBundle:Category',
           'choice_label' => 'name',
-          'multiple'     => true,
+          'expanded' => true,
+          'multiple' => true
           // 'query_builder' => function(CategoryRepository $repository) use($pattern) {
 
           //   return $repository->getLikeQueryBuilder($pattern);
 
           // }
         ))
+      
+      // ->add('skills', EntityType::class, array(
+      //   'class'        => 'SFPlatformBundle:Skill',
+      //   'choice_label' => 'name',
+      //   'multiple'     => false,
+      //   ))
       ->add('save',      SubmitType::class);
     
 
@@ -76,10 +84,20 @@ class AdvertType extends AbstractType
         // Si l'annonce n'est pas publiée, ou si elle n'existe pas encore en base (id est null)
         if (!$advert->getPublished() || null === $advert->getId()) {
           // Alors on ajoute le champ published
-          $event->getForm()->add('published', CheckboxType::class, array('required' => false));
+          $event->getForm()
+
+          ->add('published', CheckboxType::class, array('required' => false));
+
         } else {
           // Sinon, on le supprime
-          $event->getForm()->remove('published');
+          $event->getForm()
+          ->remove('published')
+          ->add('skills', CollectionType::class, array(
+            'entry_type' => AdvertSkillType::class,
+            'allow_add'    => true,
+            'allow_delete' => true,
+            'label'         => 'Ajouter des skills'
+            ));
         }
       }
     );

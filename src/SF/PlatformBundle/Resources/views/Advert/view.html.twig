@@ -30,11 +30,11 @@
 
       {% if is_granted('ROLE_ADMIN') or app.user.id == advert.user.id %}
 
-        <a href="{{ path('sf_platform_edit', {'id': advert.id}) }}" class="btn btn-default">
+        <a href="{{ path('sf_platform_edit', {'advert_id': advert.id}) }}" class="btn btn-default">
           <i class="glyphicon glyphicon-edit"></i>
           Modifier l'annonce
         </a>
-        <a href="{{ path('sf_platform_delete', {'id': advert.id}) }}" class="btn btn-danger">
+        <a href="{{ path('sf_platform_delete', {'advert_id': advert.id}) }}" class="btn btn-danger">
           <i class="glyphicon glyphicon-trash"></i>
           Supprimer l'annonce
         </a>

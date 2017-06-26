@@ -1,7 +1,5 @@
 {# src/SF/PlatformBundle/Resources/views/Advert/form.html.twig #}
 
-<h3>Formulaire d'annonce</h3>
-
 <div class="well">
   {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
 
@@ -10,7 +8,13 @@
 
   {# Génération du label + error + widget pour un champ. #}
   {% if form.date is defined %}
-    {{ form_row(form.date) }}
+    <div class="form-group">
+      {{ form_label(form.title, "Date", {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+      <div class="col-sm-10">
+        {# Génération de l'input. #}
+        {{ form_widget(form.date) }}
+      </div>
+    </div>
   {% endif %}
 
   {# Génération manuelle et éclatée : #}
@@ -44,18 +48,21 @@
   </div>
 
   <div class="form-group">
+
+    {% if advert is defined and advert.image is not null %}
+      <div class="col-sm-10">
+        <img src="{{ asset(advert.image.webPath)}}" alt="{{ advert.image.alt }}"><br/>
+      </div>
+    {% endif %}
+    
     {{ form_label(form.image, "Image", {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+
     {{ form_errors(form.image) }}
     <div class="col-sm-10">
       {{ form_widget(form.image) }}
     </div>
   </div>
 
-  {% if form.published is defined %}
-    <div class="form-group">
-      {{ form_widget(form.published) }}
-    </div>
-  {% endif %}
 
   <div class="form-group">
     {{ form_label(form.categories, "Catégories", {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
@@ -65,8 +72,34 @@
     </div>
   </div>
   
+  {% if form.skills is defined %}
+    
+    <div class="form-group">
 
-  {# <a href="#" id="add_category" class="btn btn-default">Ajouter une catégorie</a> #}
+      {{ form_label(form.skills, "Skills", {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+      {# {{ form_row(form.skills) }} #}
+      <br>
+      <div class="col-sm-10">
+        {{ form_widget(form.skills, {'attr': {'class': 'col-md-10'}}) }}
+
+        <a href="#" id="add_skill" class="btn btn-default">Ajouter des skills</a>
+        
+      </div>
+
+    </div>
+
+  {% endif %}
+
+  {% if form.published is defined %}
+    <div class="form-group">
+
+      <label class="col-sm-2 control-label control-label required">Publication</label>
+
+      <div class="col-sm-10">
+        {{ form_widget(form.published) }}
+      </div>
+    </div>
+  {% endif %}
 
   {# Pour le bouton, pas de label ni d'erreur, on affiche juste le widget #}
   {{ form_widget(form.save, {'attr': {'class': 'btn btn-primary'}}) }}
@@ -79,3 +112,126 @@
   {# Fermeture de la balise <form> du formulaire HTML #}
   {{ form_end(form) }}
 </div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+  
+  $(document).ready(function() {
+
+    // On récupère la balise <div> en question qui contient l'attribut « data-prototype » qui nous intéresse.
+
+    var $container = $('div#advert_edit_skills');
+
+
+    // On définit un compteur unique pour nommer les champs qu'on va ajouter dynamiquement
+
+    var index = $container.find(':input').length;
+
+
+    // On ajoute un nouveau champ à chaque clic sur le lien d'ajout.
+
+    $('#add_skill').click(function(e) {
+
+      addSkill($container);
+
+
+      e.preventDefault(); // évite qu'un # apparaisse dans l'URL
+
+      return false;
+
+    });
+
+
+    // On ajoute un premier champ automatiquement s'il n'en existe pas déjà un (cas d'une nouvelle annonce par exemple).
+
+    if (index == 0) {
+
+      addSkill($container);
+
+    } else {
+
+      // S'il existe déjà des catégories, on ajoute un lien de suppression pour chacune d'entre elles
+
+      $container.children('div').each(function() {
+
+        addDeleteLink($(this));
+
+      });
+
+    }
+
+
+    // La fonction qui ajoute un formulaire CategoryType
+
+    function addSkill($container) {
+
+      // Dans le contenu de l'attribut « data-prototype », on remplace :
+
+      // - le texte "__name__label__" qu'il contient par le label du champ
+
+      // - le texte "__name__" qu'il contient par le numéro du champ
+
+      var template = $container.attr('data-prototype')
+
+        .replace(/__name__label__/g, 'Skill n°' + (index+1))
+
+        .replace(/__name__/g,        index)
+
+      ;
+
+
+      // On crée un objet jquery qui contient ce template
+
+      var $prototype = $(template);
+
+
+      // On ajoute au prototype un lien pour pouvoir supprimer la catégorie
+
+      addDeleteLink($prototype);
+
+
+      // On ajoute le prototype modifié à la fin de la balise <div>
+
+      $container.append($prototype);
+
+
+      // Enfin, on incrémente le compteur pour que le prochain ajout se fasse avec un autre numéro
+
+      index++;
+
+    }
+
+
+    // La fonction qui ajoute un lien de suppression d'une catégorie
+
+    function addDeleteLink($prototype) {
+
+      // Création du lien
+
+      var $deleteLink = $('<a href="#" class="btn btn-danger">Supprimer</a>');
+
+
+      // Ajout du lien
+
+      $prototype.append($deleteLink);
+
+
+      // Ajout du listener sur le clic du lien pour effectivement supprimer la catégorie
+
+      $deleteLink.click(function(e) {
+
+        $prototype.remove();
+
+
+        e.preventDefault(); // évite qu'un # apparaisse dans l'URL
+
+        return false;
+
+      });
+
+    }
+
+  });
+
+</script>
