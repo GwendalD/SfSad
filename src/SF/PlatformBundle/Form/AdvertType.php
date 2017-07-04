@@ -61,10 +61,17 @@ class AdvertType extends AbstractType
         ))
       
       // ->add('skills', EntityType::class, array(
-      //   'class'        => 'SFPlatformBundle:Skill',
-      //   'choice_label' => 'name',
+      //   'class'        => 'SFPlatformBundle:AdvertSkill',
+      //   'choice_label' => 'id',
       //   'multiple'     => false,
       //   ))
+      // ->add('skills', CollectionType::class, array(
+      //     'entry_type'    => AdvertSkillType::class,
+      //     'allow_add'     => true,
+      //     'allow_delete'  => true,
+      //     'label'         => 'Ajouter des skills',
+      //     // 'data'          => $options['defaultAdvertSelection']
+      //     ))
       ->add('save',      SubmitType::class);
     
 
@@ -91,13 +98,7 @@ class AdvertType extends AbstractType
         } else {
           // Sinon, on le supprime
           $event->getForm()
-          ->remove('published')
-          ->add('skills', CollectionType::class, array(
-            'entry_type' => AdvertSkillType::class,
-            'allow_add'    => true,
-            'allow_delete' => true,
-            'label'         => 'Ajouter des skills'
-            ));
+          ->remove('published');
         }
       }
     );

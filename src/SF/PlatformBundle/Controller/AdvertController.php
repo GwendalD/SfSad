@@ -157,6 +157,10 @@ class AdvertController extends Controller
       $em->persist($advert);
       $em->flush();
 
+      dump($advert->getId());
+
+      exit();
+
       $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
 
       return $this->redirectToRoute('sf_platform_view', array('advert_id' => $advert->getId()));
@@ -185,6 +189,15 @@ class AdvertController extends Controller
     $form   = $this->createForm(AdvertEditType::class, $advert);
 
     if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+
+      foreach ($form->getData()->getSkills() as $skills) {
+        
+        $skills->setAdvert($advert);
+      }
+
+      // echo $form->getData()->getSkills();
+
+      // exit();
 
       $em->persist($advert);
       $em->flush();

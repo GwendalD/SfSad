@@ -21,11 +21,11 @@ class AdvertSkillType extends AbstractType
           'choice_label' => 'name',
           'multiple'     => false
         ))
-        ->add('advert', EntityType::class, array(
-          'class'        => 'SFPlatformBundle:Advert',
-          'choice_label' => 'id',
-          // 'multiple'     => false
-        ))
+        // ->add('advert', EntityType::class, array(
+        //   'class'        => 'SFPlatformBundle:Advert',
+        //   'choice_label' => 'id',
+        //   'multiple'     => false,
+        // ))
         ->add('level', TextType::class)
         ;
     }
